@@ -46,7 +46,7 @@ const desc = "勤益科大學生｜個人作品與聯絡方式";
         <h2>技能 / 工具</h2>
         <ul class="skills">
           <li>前端：HTML / CSS / TypeScript / Astro / React（基礎）</li>
-          <li>作品使用工具：Unity</li>
+          <li>作品使用工具：</li>
           <li>其他：Python（工具腳本）、Git</li>
         </ul>
       </aside>
@@ -55,7 +55,13 @@ const desc = "勤益科大學生｜個人作品與聯絡方式";
     <!-- 聯絡與連結 -->
     <section class="card">
       <h2>聯絡</h2>
-      <p>信箱：<a href="mailto:nelson930627@gmail.com">nelson930627@gmail.com</a></p>
+      <p>信箱：<a id="mail"></a></p>
+      <script is:inline>
+        const e = 'nelson930627' + '@' + 'gmail.com';
+        const a = document.getElementById('mail');
+        a.href = 'mailto:' + e;
+        a.textContent = e;
+      </script>
       <p class="muted">之後會補上社群 / YouTube / 專案連結。</p>
     </section>
   </main>
