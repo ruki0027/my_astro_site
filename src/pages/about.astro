@@ -56,12 +56,19 @@ const desc = "勤益科大學生｜個人作品與聯絡方式";
     <section class="card">
       <h2>聯絡</h2>
       <p>信箱：<a id="mail"></a></p>
+
       <script is:inline>
-        const e = 'nelson930627' + '@' + 'gmail.com';
+        // 刻意拆字，避免原始碼直接出現完整信箱
+        const user = 'nelson930627';
+        const sep  = String.fromCharCode(64); // @
+        const host = 'gmail' + '.' + 'com';
+
+        const e = `${user}${sep}${host}`;
         const a = document.getElementById('mail');
         a.href = 'mailto:' + e;
         a.textContent = e;
       </script>
+
       <p class="muted">之後會補上社群 / YouTube / 專案連結。</p>
     </section>
   </main>
