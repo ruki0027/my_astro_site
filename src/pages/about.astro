@@ -1,0 +1,109 @@
+---
+import Layout from '../layouts/Layout.astro'
+const title = "關於我｜零一";
+const desc = "勤益科大學生｜個人作品與聯絡方式";
+---
+
+<Layout title={title} description={desc}>
+  <main class="about">
+    <!-- 頭部介紹區 -->
+    <section class="hero card">
+      <div class="hero__avatar">
+        <!-- 放你的大頭貼：/images/me.jpg -->
+        <img src="/images/me.png" alt="零一" />
+      </div>
+      <div class="hero__text">
+        <h1>關於我</h1>
+        <p class="lead">
+          我是零一，目前就讀勤益科大。這個網站用來集中我的作品、開發筆記與近況。
+        </p>
+        <ul class="facts">
+          <li><span>狀態</span>學生 / 自由接案</li>
+          <li><span>興趣</span>前端、互動體驗、桌寵/小工具</li>
+          <li><span>基地</span>台灣</li>
+        </ul>
+        <div class="cta">
+          <a class="btn" href="mailto:nelson930627@gmail.com">寫信給我</a>
+          <a class="btn ghost" href="/projects">看作品集</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 內容區：自我介紹 + 技能 -->
+    <section class="grid">
+      <article class="card">
+        <h2>自我介紹</h2>
+        <p>
+          想讓更多人更快認識我，所以把過去與正在做的東西整理到這裡。
+          我偏好「先做出能動的版本，再逐步強化」的開發方式；網站與桌寵專案都會持續更新。
+        </p>
+        <p>
+          如果你有合作想法、或想針對作品給建議，歡迎直接來信。我會不定期把更新日誌與影片同步到這裡。
+        </p>
+      </article>
+
+      <aside class="card">
+        <h2>技能 / 工具</h2>
+        <ul class="skills">
+          <li>前端：HTML / CSS / TypeScript / Astro / React（基礎）</li>
+          <li>作品使用工具：Unity</li>
+          <li>其他：Python（工具腳本）、Git</li>
+        </ul>
+      </aside>
+    </section>
+
+    <!-- 聯絡與連結 -->
+    <section class="card">
+      <h2>聯絡</h2>
+      <p>信箱：<a href="mailto:nelson930627@gmail.com">nelson930627@gmail.com</a></p>
+      <p class="muted">之後會補上社群 / YouTube / 專案連結。</p>
+    </section>
+  </main>
+
+  <style>
+    :root{
+      --bg:#E6F0FA;          /* 你要的淺灰藍 */
+      --ink:#222;
+      --ink-2:#666;
+      --line:#eaeaea;
+      --radius:16px;
+      --max:1080px;
+    }
+    .about{max-width:var(--max); margin:0 auto; padding:24px;}
+    .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px;}
+    .muted{color:var(--ink-2);}
+
+    /* 頭部介紹 */
+    .hero{display:grid; grid-template-columns:180px 1fr; gap:24px; align-items:center; background:var(--bg);}
+    .hero__avatar{width:180px; height:180px; border-radius:50%; overflow:hidden; border:4px solid #fff; box-shadow:0 6px 16px rgba(0,0,0,.06);}
+    .hero__avatar img{width:100%; height:100%; object-fit:cover;}
+    .hero__text h1{margin:0 0 8px; font-size:2rem;}
+    .lead{font-size:1.05rem; margin:0 0 12px;}
+    .facts{list-style:none; padding:0; margin:0 0 12px; display:grid; gap:6px;}
+    .facts li{color:var(--ink-2);}
+    .facts li span{display:inline-block; min-width:3.5em; color:var(--ink); font-weight:600;}
+
+    .cta{display:flex; gap:12px; margin-top:8px;}
+    .btn{
+      display:inline-block; padding:10px 16px; border-radius:999px;
+      background:#1a73e8; color:#fff; text-decoration:none; font-weight:600;
+      border:1px solid #1664c7;
+    }
+    .btn:hover{filter:brightness(1.05);}
+    .btn.ghost{
+      background:#fff; color:#1a73e8; border:1px solid #c9daf4;
+    }
+
+    /* 內容兩欄 */
+    .grid{display:grid; grid-template-columns:1.5fr 1fr; gap:24px; margin:24px 0;}
+    .skills{margin:8px 0 0; padding-left:18px;}
+
+    /* 縮放時的排版（桌面優先，但縮到窄螢幕也不會炸） */
+    @media (max-width: 880px){
+      .hero{grid-template-columns:1fr; text-align:left;}
+      .hero__avatar{margin:0 auto;}
+      .grid{grid-template-columns:1fr;}
+    }
+  </style>
+</Layout>
+

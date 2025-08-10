@@ -1,0 +1,36 @@
+---
+interface Props {
+  slot?: string;           // AdSense slot id（可選：你也能只靠自動廣告）
+  style?: string;          // 高度/尺寸
+  class?: string;
+  layout?: "responsive" | "in-article" | "fluid";
+  format?: "auto" | "rectangle" | "horizontal" | "vertical";
+}
+
+// 預設一個橫幅尺寸；手機你也可以用 320x100
+const {
+  slot = "",
+  style = "display:block; min-height: 120px;",
+  class: className = "",
+  layout = "responsive",
+  format = "auto",
+} = Astro.props;
+---
+
+<ins
+  class={`adsbygoogle ${className}`}
+  style={style}
+  data-ad-client={import.meta.env.PUBLIC_ADSENSE_CLIENT}
+  {...(slot ? { "data-ad-slot": slot } : {})}
+  data-ad-format={format}
+  data-full-width-responsive="true"
+  data-ad-layout={layout}
+/>
+<script>
+  // 安全呼叫：避免重覆 push 造成錯誤
+  (window.adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<style>
+  ins.adsbygoogle { width: 100%; display: block; }
+</style>

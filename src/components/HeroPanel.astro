@@ -1,0 +1,99 @@
+---
+/** 極簡 island，不依賴 React：用原生 JS 維護單一 state */
+const IMAGES = {
+  normal: "/img/normal.png",
+  pro: "/img/pro.png",
+  night: "/img/night.png",
+};
+---
+
+<div class="card">
+  <div class="grid">
+    <figure class="hero">
+      <img id="hero-img" src={IMAGES.normal} alt="normal mode" width="640" height="360" />
+    </figure>
+
+    <div>
+
+
+      <div style="margin-top:16px">
+        <button id="btn-onoff" aria-pressed="true">ON</button>
+      </div>
+
+      <p class="muted" style="margin-top:12px">
+
+      </p>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  const IMAGES = {
+    normal: "/img/normal.png",
+    pro: "/img/pro.png",
+    night: "/img/night.png",
+  };
+
+  // 預載避免切換閃爍
+  Object.values(IMAGES).forEach(src => { const i = new Image(); i.src = src; });
+
+  const imgEl = document.getElementById("hero-img");
+  const seg = document.getElementById("seg");
+  const btn = document.getElementById("btn-onoff");
+
+  const state = { mode: "normal", enabled: true };
+
+  function render() {
+    imgEl.src = IMAGES[state.mode];
+    imgEl.alt = `${state.mode} mode`;
+    document.body.classList.toggle("is-disabled", !state.enabled);
+    btn.setAttribute("aria-pressed", String(state.enabled));
+    btn.textContent = state.enabled ? "ON" : "OFF";
+
+    seg.querySelectorAll("button[data-mode]").forEach(b=>{
+      const active = b.dataset.mode === state.mode;
+      b.classList.toggle("is-active", active);
+      b.setAttribute("aria-pressed", String(active));
+      // 當 disabled（enabled=false）時給予 tab 限制
+      if (!state.enabled) b.setAttribute("tabindex", "-1");
+      else b.removeAttribute("tabindex");
+    });
+  }
+
+  btn.addEventListener("click", () => {
+    state.enabled = !state.enabled;
+    render();
+  });
+
+  seg.addEventListener("click", (e) => {
+    if (!state.enabled) return;
+    const b = e.target.closest("button[data-mode]");
+    if (!b) return;
+    state.mode = b.dataset.mode;
+    render();
+  });
+
+  // 鍵盤操作（a11y）
+  seg.addEventListener("keydown", (e) => {
+    if (!state.enabled) return;
+    if (!["ArrowLeft","ArrowRight"].includes(e.key)) return;
+    e.preventDefault();
+    const order = ["normal","pro","night"];
+    const idx = order.indexOf(state.mode);
+    const next = e.key === "ArrowRight" ? (idx+1)%order.length : (idx-1+order.length)%order.length;
+    state.mode = order[next];
+    render();
+  });
+
+  render();
+</script>
+
+<style>
+  .hero { margin:0; display:flex; align-items:center; justify-content:center; background:#fafafa; border-radius:12px; min-height: 360px; }
+  .hero img { max-width:100%; height:auto; display:block; transition:opacity .2s ease; }
+  .seg { display:flex; gap:8px; }
+  .seg button { padding:8px 12px; border-radius:10px; border:1px solid #ddd; background:#fff; cursor:pointer; }
+  .seg button.is-active { border-color:#333; font-weight:600; }
+  #btn-onoff { padding:8px 14px; border-radius:999px; border:1px solid #ddd; }
+  .is-disabled .hero { filter:grayscale(1) opacity(.7); }
+</style>

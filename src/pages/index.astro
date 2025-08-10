@@ -1,0 +1,119 @@
+---
+import Layout from '../layouts/Layout.astro'
+import fs from 'node:fs'
+import path from 'node:path'
+import matter from 'gray-matter'
+import { marked } from 'marked'
+
+import AdSlot from '../components/AdSlot.astro'
+import YouTubeEmbed from '../components/YouTubeEmbed.astro'
+import HeroPanel from '../components/HeroPanel.astro'
+
+// 讀取 log 資料夾，取最新一篇
+const logDir = path.resolve('./src/content/log')
+const files = fs.readdirSync(logDir)
+  .filter(f => f.endsWith('.md'))
+
+const logs = files.map(file => {
+  const raw = fs.readFileSync(path.join(logDir, file), 'utf-8')
+  const { data, content } = matter(raw)
+  return {
+    ...data,
+    content,
+    filename: file.replace('.md', ''),
+    date: new Date(data.date)
+  }
+}).sort((a, b) => b.date - a.date)
+
+const latestLog = logs[0]
+const formattedDate = latestLog?.date?.toLocaleDateString('zh-TW', {
+  year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
+})
+
+// 可選：擷取前 160 字當摘要（移除 md 標記的粗切版）
+const plain = latestLog ? latestLog.content.replace(/[#>*_`]/g, '').trim() : ''
+const excerpt = plain.length > 160 ? plain.slice(0, 160) + '…' : plain
+
+// 你的最新影片（先放佔位，之後換）
+const LATEST_VIDEO_ID = 'dQw4w9WgXcQ'
+---
+
+<Layout>
+  <!-- 頂部廣告位（審核/本地可先關掉 PUBLIC_ADSENSE_CLIENT） -->
+  <AdSlot style="display:block; min-height:120px;" format="auto" />
+
+  <main>
+    <h1>你好，歡迎來到我的世界</h1>
+    <p>這裡是我個人的創作空間，記錄我的專案與想法。</p>
+
+    <section class="grid">
+      <section>
+        <h2>放個形象圖</h2>
+        <div class="display-box">
+          <img src="/images/demo.jpg" alt="展示圖片" />
+        </div>
+      </section>
+      <style>
+        .display-box img {
+          max-width: 100%;
+          height: auto;
+          object-fit: contain;
+        }
+
+        .display-box {
+          height: 300px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #fff;
+          overflow: hidden;
+        }
+      </style>
+
+      <div class="card">
+        <h2>最新影片</h2>
+        <YouTubeEmbed id={LATEST_VIDEO_ID} title="My Pet 最新展示" />
+        <p class="muted" style="margin-top:8px">目前還沒有影片先來個瑞克搖。</p>
+      </div>
+    </section>
+
+    <section class="latest-log card" style="margin-top:24px">
+      <h2>📰 最新日誌</h2>
+      {latestLog ? (
+        <>
+          <p>
+            <a href={`/log/${latestLog.filename}`}>{latestLog.title}</a>
+          </p>
+          <p class="log-date">{formattedDate}</p>
+          {excerpt && <p class="muted">{excerpt} <a href={`/log/${latestLog.filename}`}>繼續閱讀</a></p>}
+        </>
+      ) : (
+        <p class="muted">還沒有日誌喔，等等再來看看 (＞w-)</p>
+      )}
+    </section>
+
+    <section class="fun-intro">
+      <p>(ง •̀_•́)ง 「嘿，你終於來了！這站目前還有點空，但我們會慢慢蓋起來的～」</p>
+      <nav>
+        <ul>
+          <li><a href="/about">關於我</a></li>
+          <li><a href="/log">更新日誌</a></li>
+          <li><a href="/projects">作品集</a></li>
+        </ul>
+      </nav>
+    </section>
+  </main>
+
+  <!-- 底部廣告位 -->
+  <div style="margin-top:24px">
+    <AdSlot style="display:block; min-height:120px;" format="auto" />
+  </div>
+
+  <footer class="footer">
+    <hr />
+    <p style="text-align: center; font-size: 0.8rem; margin-top: 1rem;">
+      🐾 本站為個人作品展示與創作基地｜所有內容仍在建設中
+    </p>
+    <p style="text-align: center; font-size: 0.7rem;">By 零一</p>
+  </footer>
+</Layout>

@@ -1,0 +1,18 @@
+---
+// src/pages/log/index.astro
+import Layout from '../../layouts/Layout.astro'
+import { getPosts } from '../../utils/getPosts.ts'
+
+const posts = await getPosts()
+---
+
+<Layout>
+  <h1>更新日誌</h1>
+  <ul style="margin-left: 1rem;">
+    {posts.map(post => (
+      <li style="margin-bottom: 0.75rem;">
+        <a href={post.url}>{post.frontmatter.date} - {post.frontmatter.title}</a>
+      </li>
+    ))}
+  </ul>
+</Layout>

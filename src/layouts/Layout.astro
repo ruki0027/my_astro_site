@@ -1,0 +1,43 @@
+---
+import NavBar from '../components/NavBar.astro'
+---
+<!DOCTYPE html>
+
+
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的網站</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <NavBar />
+    <div class="container">
+      <slot />
+    </div>
+    <style>
+      body {
+        background-color: #d1e6eeff; /* 或換成你想要的深色 */
+        color: #000000ff;
+        margin: 0;
+        padding: 0;
+        font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
+      }
+
+      .md-content h1, .md-content h2, .md-content h3 {
+        color: #0ff;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .container {
+        padding: 2rem;
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
+    </style>
+  </body>
+</html>
