@@ -1,19 +1,40 @@
-:root{
-  font-size: 100%;
-  --font-body-min: 1rem; --font-body-max: 1.125rem; /* 16~18px */
-  --font-h1-min: 1.75rem; --font-h1-max: 2.5rem;
-  --font-h2-min: 1.375rem; --font-h2-max: 1.75rem;
-  --zoom: 1; /* A-/A+ 倍率 */
+:root {
+  /* 內文字體大小範圍（手機~桌機） */
+  --font-body-min: 1rem;        /* 16px */
+  --font-body-max: 1.125rem;    /* 18px */
+
+  /* 標題字體大小範圍 */
+  --font-h1-min: 1.75rem;       /* 28px */
+  --font-h1-max: 2.5rem;        /* 40px */
+  --font-h2-min: 1.375rem;      /* 22px */
+  --font-h2-max: 1.75rem;       /* 28px */
 }
-html{ line-height:1.6; font-size: calc(100% * var(--zoom)); }
-body{ font-size: clamp(var(--font-body-min), 0.95rem + 0.4vw, var(--font-body-max)); }
 
-h1{ font-size: clamp(var(--font-h1-min), 1.2rem + 2.4vw, var(--font-h1-max)); line-height:1.2; }
-h2{ font-size: clamp(var(--font-h2-min), 1.1rem + 1.2vw, var(--font-h2-max)); line-height:1.35; }
+html {
+  line-height: 1.6;
+}
 
-/* 可讀行寬 */
-main,.prose,article,.content{ max-width:70ch; margin-inline:auto; padding-inline:1rem; }
+body {
+  /* 流體字體大小：依視窗寬度在 min~max 間平滑變化 */
+  font-size: clamp(var(--font-body-min), 0.95rem + 0.4vw, var(--font-body-max));
+}
 
-/* 未來看板娘共用設定 */
-.sprite-left,.sprite-right{ image-rendering: pixelated; }
-@media (max-width:1200px){ .sprite-left,.sprite-right{ display:none; } }
+h1 {
+  font-size: clamp(var(--font-h1-min), 1.2rem + 2.4vw, var(--font-h1-max));
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: clamp(var(--font-h2-min), 1.1rem + 1.2vw, var(--font-h2-max));
+  line-height: 1.35;
+}
+
+/* 可讀行寬與內距 */
+main,
+.prose,
+article,
+.content {
+  max-width: 70ch;        /* 一行最多約 70 個字 */
+  margin-inline: auto;    /* 水平置中 */
+  padding-inline: 1rem;   /* 手機左右保留 16px 安全距 */
+}
