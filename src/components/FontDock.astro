@@ -1,5 +1,5 @@
 ---
-const { side = "left" } = Astro.props; // "left" | "right"
+const { side = "right" } = Astro.props; // "left" | "right"
 ---
 <div class="font-dock" data-side={side} aria-label="字級工具">
   <div class="dock-panel" role="group" aria-label="字級控制">
@@ -10,24 +10,33 @@ const { side = "left" } = Astro.props; // "left" | "right"
 </div>
 
 <style>
-.font-dock{ position:fixed; top:50%; transform:translateY(-50%); z-index:60; }
-.font-dock .dock-panel{ display:flex; align-items:center; gap:.5rem; height:44px; padding:.5rem .75rem;
-  background: rgba(20,20,20,.75); color:#fff; backdrop-filter: blur(4px);
+.font-dock{ position:fixed; top:50%; transform:translateY(-50%); z-index:9999; }
+.font-dock .dock-panel{
+  display:flex; flex-direction:column; align-items:center; gap:.5rem;
+  width:48px; padding:.5rem .4rem;
+  background: rgba(20,20,20,.8); color:#fff; backdrop-filter: blur(4px);
   box-shadow: 0 4px 24px rgba(0,0,0,.25);
 }
-.font-dock .dock-btn{ border:0; padding:.25rem .5rem; cursor:pointer; font:inherit; border-radius:.5rem; }
-.font-dock .dock-text{ min-width:3.5ch; text-align:center; font-variant-numeric: tabular-nums; }
+.dock-btn{ border:0; padding:.25rem .5rem; cursor:pointer; font:inherit; border-radius:.5rem; }
+.dock-text{ writing-mode: vertical-rl; transform: rotate(180deg); /* 直排顯示百分比 */ 
+  font-variant-numeric: tabular-nums; }
 
+/* 左右定位 */
 .font-dock[data-side="left"]{ left:0; }
 .font-dock[data-side="right"]{ right:0; }
 
-.font-dock[data-side="left"] .dock-panel{ border-radius:0 .75rem .75rem 0; transform:translateX(calc(-100% + 28px)); }
-.font-dock[data-side="right"] .dock-panel{ border-radius:.75rem 0 0 .75rem; transform:translateX(calc(100% - 28px)); }
-
-.font-dock:hover .dock-panel,
-.font-dock:focus-within .dock-panel{ transform:translateX(0); }
+/* 露出把手 + 滑出動畫（直式） */
+.font-dock[data-side="left"] .dock-panel{
+  border-radius: 0 .75rem .75rem 0;
+  transform: translateX(calc(-100% + 24px));
+}
+.font-dock[data-side="right"] .dock-panel{
+  border-radius: .75rem 0 0 .75rem;
+  transform: translateX(calc(100% - 24px));
+}
+.font-dock:hover .dock-panel, .font-dock:focus-within .dock-panel{ transform: translateX(0); }
 
 @media (prefers-reduced-motion: reduce){ .font-dock .dock-panel{ transition:none; } }
-@media (min-width:768px){ .font-dock .dock-panel{ transition:transform .2s ease; } }
-@media (max-width:768px){ .font-dock{ display:none; } } /* 手機隱藏避免擋內容 */
+@media (min-width:768px){ .font-dock .dock-panel{ transition: transform .2s ease; } }
+@media (max-width:768px){ .font-dock{ display:none; } } /* 手機關掉避免擋內容 */
 </style>
