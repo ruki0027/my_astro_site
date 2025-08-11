@@ -1,42 +1,53 @@
 ---
-// src/pages/log/[slug].astro
-import Layout from '../../layouts/Layout.astro'
-import { getPosts } from '../../utils/getPosts.ts'
 
-export async function getStaticPaths() {
-  const posts = await getCollection('log', ({ data }) => !data.draft)
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }))
+import Layout from '../../layouts/Layout.astro'
+import fs from 'node:fs'
+import path from 'node:path'
+import matter from 'gray-matter'
+import { marked } from 'marked'
+
+const { slug } = Astro.params
+
+const logDir = path.resolve('./src/content/log')
+const filePath = path.join(logDir, `${slug}.md`)
+
+let title = slug
+let date = new Date()
+let html = '<p>尚無內容。</p>'
+
+try {
+  const raw = fs.readFileSync(filePath, 'utf-8')
+  const { data, content } = matter(raw)
+  title = data.title ?? slug
+  date = data.date ? new Date(data.date) : new Date()
+  html = marked.parse(content)
+} catch (e) {
+  // 找不到檔案就給 404
+  throw Astro.redirect('/404')
 }
 
-const { post } = Astro.props
-const { Content } = await post.render()
-
 const fmt = new Intl.DateTimeFormat('zh-TW', {
-  year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  timeZone: 'Asia/Taipei',
 })
 ---
 
-<Layout title={post.data.title}>
-  <main class="wrap">
-    <article class="post">
-      <h1>{post.data.title}</h1>
-      <p class="date">{fmt.format(post.data.date)}</p>
-      <div class="content">
-        <Content />
-      </div>
-      <p class="back"><a href="/log">← 回更新日誌</a></p>
-    </article>
+<Layout>
+  <main class="post">
+    <p class="date">{fmt.format(date)}</p>
+    <h1>{title}</h1>
+    <div class="content" set:html={html}></div>
+    <p class="back"><a href="/log/">← 返回更新日誌</a></p>
   </main>
-
-  <style>
-    .wrap { max-width: 860px; margin: 0 auto; padding: 24px; }
-    .post h1 { margin: 0 0 6px; }
-    .date { color:#666; margin:0 0 16px; }
-    .content :where(p, ul, ol, pre){ margin: 12px 0; }
-    .content pre { background:#f7f7f7; padding:12px; border-radius:8px; overflow:auto; }
-    .back a { text-decoration: none; color:#1a73e8; }
-  </style>
+  
 </Layout>
+
+<style>
+  .post { max-width: 860px; margin: 0 auto; padding: 2rem 1rem; }
+  .date { opacity: .7; margin: 0 0 .25rem; }
+  h1 { margin: 0 0 1rem; }
+  .content :where(p, ul, ol, pre, blockquote){ margin: .75rem 0; line-height: 1.8; }
+  .back { margin-top: 2rem; }
+</style>

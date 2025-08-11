@@ -1,39 +1,74 @@
 ---
-// src/pages/log/index.astro
+
 import Layout from '../../layouts/Layout.astro'
-import { getPosts } from '../../utils/getPosts.ts'
+import fs from 'node:fs'
+import path from 'node:path'
+import matter from 'gray-matter'
+import { marked } from 'marked'
 
-const logs = (await getCollection('log', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+// 讀取 md 檔
+const logDir = path.resolve('./src/content/log')
+const files = fs.readdirSync(logDir).filter(f => f.endsWith('.md'))
 
+function mdToHtml(md) {
+  return marked.parse(md)
+}
+
+// 取前幾行當摘要（去掉 HTML tag）
+function toExcerpt(html, maxLen = 120) {
+  const text = html.replace(/<[^>]+>/g, '').trim()
+  return text.length > maxLen ? text.slice(0, maxLen) + '…' : text
+}
+
+const logs = files.map(file => {
+  const raw = fs.readFileSync(path.join(logDir, file), 'utf-8')
+  const { data, content } = matter(raw)
+  const date = data.date ? new Date(data.date) : new Date()
+
+  const html = mdToHtml(content)
+
+  return {
+    slug: file.replace(/\.md$/, ''),
+    title: data.title ?? file.replace(/\.md$/, ''),
+    date,
+    html,
+    excerpt: toExcerpt(html),
+  }
+}).sort((a, b) => b.date.getTime() - a.date.getTime())
+
+// 台灣時區的日期格式
 const fmt = new Intl.DateTimeFormat('zh-TW', {
-  year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  timeZone: 'Asia/Taipei',
 })
 ---
 
-<Layout title="更新日誌">
-  <main style="max-width: 860px; margin: 0 auto; padding: 24px;">
+<Layout>
+  <main class="logs">
     <h1>更新日誌</h1>
-    {logs.length === 0 ? (
-      <p class="muted">目前沒有日誌 (´-ω-`)</p>
-    ) : (
-      <ul class="list">
-        {logs.map(p => (
-          <li>
-            <a href={`/log/${p.slug}`}>{p.data.title}</a>
-            <span class="date">{fmt.format(p.data.date)}</span>
-          </li>
-        ))}
-      </ul>
-    )}
-  </main>
 
-  <style>
-    .list { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 10px; }
-    .list li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid #eee; padding: 10px 0; }
-    .list a { text-decoration: none; font-weight: 600; color: #222; }
-    .list a:hover { text-decoration: underline; }
-    .date { color: #666; font-size: .9rem; white-space: nowrap; }
-    .muted { color: #666; }
-  </style>
+    {logs.map((log) => (
+      <article class="log">
+        <h2>
+          <a href={`/log/${log.slug}/`}>
+            {fmt.format(log.date)} — {log.title}
+          </a>
+        </h2>
+        <p class="excerpt">{log.excerpt}</p>
+        <p class="more"><a href={`/log/${log.slug}/`}>閱讀全文 →</a></p>
+      </article>
+    ))}
+  </main>
+  
 </Layout>
+
+<style>
+  .logs { max-width: 860px; margin: 0 auto; padding: 2rem 1rem; }
+  h1 { margin-bottom: 1rem; }
+  .log { padding: 1rem 0; border-bottom: 1px solid rgba(0,0,0,.08); }
+  .log h2 { margin: 0 0 .5rem; font-size: 1.125rem; }
+  .excerpt { margin: .25rem 0 .5rem; line-height: 1.6; opacity: .9; }
+  .more a { text-decoration: none; }
+</style>
