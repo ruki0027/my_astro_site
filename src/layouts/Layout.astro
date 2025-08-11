@@ -1,68 +1,159 @@
 ---
-// 保留你原本的 NavBar
+
 import NavBar from '../components/NavBar.astro'
 
-// 新增：宣告可選的 props，並給預設值避免未傳就爆
+
 export interface Props {
   title?: string
   description?: string
+  url?: string           // og:url
+  ogImage?: string       // og:image
+  showNav?: boolean      // 是否顯示 NavBar
+  showFooter?: boolean   // 是否顯示 Footer
+  useAdSense?: boolean   // 是否載入 AdSense（env 有值才會生效）
 }
 
-// 從 Astro.props 取值；沒傳就用預設
+const ADSENSE_CLIENT = import.meta.env.PUBLIC_ADSENSE_CLIENT ?? ""
+
 const {
   title = '我的網站',
-  description = ''
+  description = '',
+  url = '',
+  ogImage = '/og.png',
+  showNav = true,
+  showFooter = true,
+  useAdSense = true,
 } = Astro.props
 ---
 <!DOCTYPE html>
 <html lang="zh-Hant">
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+
+    <!-- 社群分享 -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {url && <meta property="og:url" content={url} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Favicon -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate icon" href="/favicon.ico" />
 
-    <!-- 這些 meta 原本就有，但需要可用的 title/description -->
-    <meta property="og:title" content={title} />
-    {description && <meta property="og:description" content={description} />}
-    <meta property="og:url" content="https://my-astro-site-dusky.vercel.app" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- title 改用 props，沒傳就用預設 -->
-    <title>{title}</title>
-
+    <!-- 字體（可換掉） -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <NavBar />
-    <div class="container">
-      <slot />
-    </div>
+
+    <!-- AdSense（僅在 useAdSense 且設了 PUBLIC_ADSENSE_CLIENT 時載入） -->
+    {(useAdSense && ADSENSE_CLIENT) && (
+      <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+        data-ad-client={ADSENSE_CLIENT}
+      ></script>
+    )}
+
     <style>
-      body {
-        background-color: #d1e6eeff;
-        color: #000000ff;
-        margin: 0;
-        padding: 0;
-        font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
+      :root {
+        --max: 960px;         /* 站內主容器寬度 */
+        /* 通用色票（from about） */
+        --bg: #E6F0FA;
+        --ink: #222;
+        --ink-2: #666;
+        --line: #eaeaea;
+        --radius: 16px;
       }
 
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        background-color: #d1e6eeff; /* 你原本的底色 */
+        color: #000000ff;
+        font-family: 'Noto Sans TC', '微軟正黑體', ui-sans-serif, system-ui, sans-serif;
+        line-height: 1.6;
+      }
+
+      /* 主容器（全站共用） */
+      .container {
+        max-width: var(--max);
+        padding: 2rem 1.25rem;
+        margin: 0 auto;
+      }
+
+      /* 文章標題色（沿用舊版） */
       .md-content h1, .md-content h2, .md-content h3 {
         color: #0ff;
         margin-top: 1.5rem;
         margin-bottom: 1rem;
       }
 
-      .container {
-        padding: 2rem;
-        max-width: 960px;
-        margin: 0 auto;
+      /* ===== 共用元件（from about） ===== */
+
+      /* 卡片、弱化文字 */
+      .card { background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px; }
+      .muted { color:var(--ink-2); }
+
+      /* Hero 區塊（頭部介紹） */
+      .hero { display:grid; grid-template-columns:180px 1fr; gap:24px; align-items:center; background:var(--bg); }
+      .hero__avatar { width:180px; height:180px; border-radius:50%; overflow:hidden; border:4px solid #fff; box-shadow:0 6px 16px rgba(0,0,0,.06); }
+      .hero__avatar img { width:100%; height:100%; object-fit:cover; }
+      .hero__text h1 { margin:0 0 8px; font-size:2rem; }
+      .lead { font-size:1.05rem; margin:0 0 12px; }
+      .facts { list-style:none; padding:0; margin:0 0 12px; display:grid; gap:6px; }
+      .facts li { color:var(--ink-2); }
+      .facts li span { display:inline-block; min-width:3.5em; color:var(--ink); font-weight:600; }
+
+      /* CTA / Button */
+      .cta { display:flex; gap:12px; margin-top:8px; }
+      .btn {
+        display:inline-block; padding:10px 16px; border-radius:999px;
+        background:#1a73e8; color:#fff; text-decoration:none; font-weight:600;
+        border:1px solid #1664c7;
       }
-      
+      .btn:hover { filter:brightness(1.05); }
+      .btn.ghost { background:#fff; color:#1a73e8; border:1px solid #c9daf4; }
+
+      /* 內容兩欄 */
+      .grid { display:grid; grid-template-columns:1.5fr 1fr; gap:24px; margin:24px 0; }
+      .skills { margin:8px 0 0; padding-left:18px; }
+
+      /* RWD 調整 */
+      @media (max-width: 880px){
+        .hero { grid-template-columns:1fr; text-align:left; }
+        .hero__avatar { margin:0 auto; }
+        .grid { grid-template-columns:1fr; }
+      }
+
+      /* Footer */
+      footer {
+        color: #666;
+        border-top: 1px solid #eaeaea;
+        margin-top: 2rem;
+        padding: 1.25rem 0 3rem;
+      }
+
+      a { color: inherit; }
     </style>
+
+  </head>
+  <body>
+    {showNav && <NavBar />}
+
+    <main class="container">
+      <slot />
+    </main>
+
+    {showFooter && (
+      <footer class="container">
+        <small>© {new Date().getFullYear()} My Pet · <a href="/privacy">Privacy</a></small>
+      </footer>
+    )}
   </body>
 </html>

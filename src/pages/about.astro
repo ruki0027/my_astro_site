@@ -1,16 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro'
+
 const title = "關於我｜零一";
 const desc = "勤益科大學生｜個人作品與聯絡方式";
 ---
 
-<Layout title={title} description={desc}>
-  <main class="about">
+<Layout title={title} description={desc} showNav showFooter>
+  <main class="container">
     <!-- 頭部介紹區 -->
     <section class="hero card">
       <div class="hero__avatar">
-        <!-- 放你的大頭貼：/images/me.jpg -->
+
         <img src="/images/me.png" alt="零一" />
+        
       </div>
       <div class="hero__text">
         <h1>關於我</h1>
@@ -58,7 +60,7 @@ const desc = "勤益科大學生｜個人作品與聯絡方式";
       <p>信箱：<a id="mail"></a></p>
 
       <script is:inline>
-        // 刻意拆字，避免原始碼直接出現完整信箱
+
         const user = 'nelson930627';
         const sep  = String.fromCharCode(64); // @
         const host = 'gmail' + '.' + 'com';
@@ -73,50 +75,6 @@ const desc = "勤益科大學生｜個人作品與聯絡方式";
     </section>
   </main>
 
-  <style>
-    :root{
-      --bg:#E6F0FA;          /* 你要的淺灰藍 */
-      --ink:#222;
-      --ink-2:#666;
-      --line:#eaeaea;
-      --radius:16px;
-      --max:1080px;
-    }
-    .about{max-width:var(--max); margin:0 auto; padding:24px;}
-    .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px;}
-    .muted{color:var(--ink-2);}
 
-    /* 頭部介紹 */
-    .hero{display:grid; grid-template-columns:180px 1fr; gap:24px; align-items:center; background:var(--bg);}
-    .hero__avatar{width:180px; height:180px; border-radius:50%; overflow:hidden; border:4px solid #fff; box-shadow:0 6px 16px rgba(0,0,0,.06);}
-    .hero__avatar img{width:100%; height:100%; object-fit:cover;}
-    .hero__text h1{margin:0 0 8px; font-size:2rem;}
-    .lead{font-size:1.05rem; margin:0 0 12px;}
-    .facts{list-style:none; padding:0; margin:0 0 12px; display:grid; gap:6px;}
-    .facts li{color:var(--ink-2);}
-    .facts li span{display:inline-block; min-width:3.5em; color:var(--ink); font-weight:600;}
-
-    .cta{display:flex; gap:12px; margin-top:8px;}
-    .btn{
-      display:inline-block; padding:10px 16px; border-radius:999px;
-      background:#1a73e8; color:#fff; text-decoration:none; font-weight:600;
-      border:1px solid #1664c7;
-    }
-    .btn:hover{filter:brightness(1.05);}
-    .btn.ghost{
-      background:#fff; color:#1a73e8; border:1px solid #c9daf4;
-    }
-
-    /* 內容兩欄 */
-    .grid{display:grid; grid-template-columns:1.5fr 1fr; gap:24px; margin:24px 0;}
-    .skills{margin:8px 0 0; padding-left:18px;}
-
-    /* 縮放時的排版（桌面優先，但縮到窄螢幕也不會炸） */
-    @media (max-width: 880px){
-      .hero{grid-template-columns:1fr; text-align:left;}
-      .hero__avatar{margin:0 auto;}
-      .grid{grid-template-columns:1fr;}
-    }
-  </style>
 </Layout>
 
