@@ -1,22 +1,39 @@
 ---
+// 保留你原本的 NavBar
 import NavBar from '../components/NavBar.astro'
+
+// 新增：宣告可選的 props，並給預設值避免未傳就爆
+export interface Props {
+  title?: string
+  description?: string
+}
+
+// 從 Astro.props 取值；沒傳就用預設
+const {
+  title = '我的網站',
+  description = ''
+} = Astro.props
 ---
 <!DOCTYPE html>
-
-
 <html lang="zh-Hant">
   <head>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate icon" href="/favicon.ico" />
+
+    <!-- 這些 meta 原本就有，但需要可用的 title/description -->
     <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    {description && <meta property="og:description" content={description} />}
     <meta property="og:url" content="https://my-astro-site-dusky.vercel.app" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>我的網站</title>
+
+    <!-- title 改用 props，沒傳就用預設 -->
+    <title>{title}</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   </head>
@@ -27,7 +44,7 @@ import NavBar from '../components/NavBar.astro'
     </div>
     <style>
       body {
-        background-color: #d1e6eeff; /* 或換成你想要的深色 */
+        background-color: #d1e6eeff;
         color: #000000ff;
         margin: 0;
         padding: 0;
@@ -45,7 +62,7 @@ import NavBar from '../components/NavBar.astro'
         max-width: 960px;
         margin: 0 auto;
       }
-
+      
     </style>
   </body>
 </html>

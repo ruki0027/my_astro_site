@@ -1,29 +1,40 @@
 ---
 
 import Layout from '../../layouts/Layout.astro'
-import { getEntryBySlug } from 'astro:content'
+import { getCollection, getEntryBySlug } from 'astro:content'
 import { marked } from 'marked'
 
-const { slug } = Astro.params
-const entry = await getEntryBySlug('log', slug!)
+// ★ 這段是關鍵：在靜態輸出下，列出要產生的所有 slug
+export async function getStaticPaths() {
+  const entries = await getCollection('log')
+  return entries.map((e) => ({
+    params: { slug: e.slug },
+  }))
+}
 
-if (!entry) throw Astro.redirect('/404')
+const { slug } = Astro.params
+
+const entry = await getEntryBySlug('log', slug!)
+if (!entry) {
+  throw Astro.redirect('/404')
+}
 
 const title = entry.data.title
 const date = typeof entry.data.date === 'string' ? new Date(entry.data.date) : entry.data.date ?? new Date()
 const html = marked.parse(entry.body)
 
-const fmt = new Intl.DateTimeFormat('zh-TW', { year:'numeric', month:'2-digit', day:'2-digit', timeZone:'Asia/Taipei' })
+const fmt = new Intl.DateTimeFormat('zh-TW', {
+  year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Taipei'
+})
 ---
 
-<Layout>
+<Layout title={title}>
   <main class="post">
     <p class="date">{fmt.format(date)}</p>
     <h1>{title}</h1>
     <div class="content" set:html={html}></div>
     <p class="back"><a href="/log/">← 返回更新日誌</a></p>
   </main>
-
 </Layout>
 
 <style>
