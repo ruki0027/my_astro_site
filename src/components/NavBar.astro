@@ -1,18 +1,44 @@
+---
+const links = [
+  { href: "/", label: "首頁" },
+  { href: "/about", label: "關於" },
+  { href: "/posts", label: "文章" },
+  { href: "/contact", label: "聯絡" },
+];
+const brand = "MySite";
+---
+<header class="navbar-fixed" role="banner" aria-label="主導覽">
+  <nav class="navbar-fixed__inner">
+    <a class="brand" href="/">{brand}</a>
+    <ul class="menu">
+      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+    </ul>
+  </nav>
+</header>
+
 <style>
-nav {
-  background: #222;
-  padding: 0.5rem 1rem;
-  display: flex;
-  gap: 1rem;
-  font-family: 'Press Start 2P', 'Noto Sans TC', '微軟正黑體', monospace;
-}
-
-a {
-  color: #0ff;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
+  /* 本體樣式（不汙染全域） */
+  .navbar-fixed {
+    position: fixed;
+    inset: 0 0 auto 0;          /* top:0; left/right:0 */
+    height: var(--nav-h, 56px);  /* 若全域沒定義就用 56px */
+    background: #111;
+    color: #fff;
+    z-index: 2147483647;         /* 壓過任何廣告/浮層 */
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    padding-top: max(env(safe-area-inset-top), 0px); /* iOS 瀏海 */
+  }
+  .navbar-fixed__inner {
+    max-width: var(--max, 1200px);
+    margin: 0 auto;
+    height: calc(var(--nav-h, 56px) - max(env(safe-area-inset-top), 0px));
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 20px;
+  }
+  .brand { color:#fff; text-decoration:none; font-weight:700; }
+  .menu { margin-left:auto; display:flex; gap:16px; list-style:none; padding:0; }
+  .menu a { color:#ddd; text-decoration:none; font-size:15px; }
+  .menu a:hover { color:#fff; }
 </style>
