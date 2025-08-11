@@ -4,34 +4,39 @@ import Layout from '../../layouts/Layout.astro'
 import { getPosts } from '../../utils/getPosts.ts'
 
 export async function getStaticPaths() {
-  const posts = await getPosts()
+  const posts = await getCollection('log', ({ data }) => !data.draft)
   return posts.map((post) => ({
-    params: { slug: post.slug }
+    params: { slug: post.slug },
+    props: { post },
   }))
 }
 
-const { slug } = Astro.params
-const posts = await getPosts()
-const post = posts.find(p => p.slug === slug)
+const { post } = Astro.props
+const { Content } = await post.render()
 
-if (!post) throw new Error(`找不到 slug: ${slug}`)
+const fmt = new Intl.DateTimeFormat('zh-TW', {
+  year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
+})
 ---
 
-<Layout>
-  <h1>{post.frontmatter.title}</h1>
-  <p style="font-size: 0.8rem; color: #888;">
-    {
-      new Date(post.frontmatter.date).toLocaleDateString('zh-TW', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'short',
-      })
-    }
-  </p>
+<Layout title={post.data.title}>
+  <main class="wrap">
+    <article class="post">
+      <h1>{post.data.title}</h1>
+      <p class="date">{fmt.format(post.data.date)}</p>
+      <div class="content">
+        <Content />
+      </div>
+      <p class="back"><a href="/log">← 回更新日誌</a></p>
+    </article>
+  </main>
 
-  <hr />
-  <article style="margin-top: 1rem;">
-    {post.default}
-  </article>
+  <style>
+    .wrap { max-width: 860px; margin: 0 auto; padding: 24px; }
+    .post h1 { margin: 0 0 6px; }
+    .date { color:#666; margin:0 0 16px; }
+    .content :where(p, ul, ol, pre){ margin: 12px 0; }
+    .content pre { background:#f7f7f7; padding:12px; border-radius:8px; overflow:auto; }
+    .back a { text-decoration: none; color:#1a73e8; }
+  </style>
 </Layout>
