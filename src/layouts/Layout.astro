@@ -1,7 +1,9 @@
 ---
 
 import NavBar from '../components/NavBar.astro'
-
+import FontDock from "@/components/FontDock.astro";
+import "@/styles/global.css";
+import "@/styles/typography.css";
 
 export interface Props {
   title?: string
@@ -164,5 +166,15 @@ const {
         <small>© {new Date().getFullYear()} My Pet · <a href="/privacy">Privacy</a></small>
       </footer>
     )}
+    <FontDock side="left" />
+    <main class="content">
+      <slot />
+    </main>
+
+    <!-- 未來看板娘預留（可先空著） -->
+    <div class="sprite-left"></div>
+    <div class="sprite-right"></div>
+
+    <script src="/scripts/font-dock.js" defer></script>
   </body>
 </html>
