@@ -28,9 +28,22 @@ import Layout from '../layouts/Layout.astro'
 需要有先裝 Python 並加入 Path 環境變數中
 雙擊 bat 檔案即可快速開啟
 txt 檔案可放入你預計會使用的套件，會自動檢查並安裝
-有任何問題歡迎聯絡我：nelaon930627@gmail.com</code></pre>
+有任何問題歡迎聯絡我
 
-    <h2>📬 聯絡方式</h2>
-    <p>信箱：<code>nelaon930627@gmail.com</code></p>
+    <h2>聯絡</h2>
+    <p>
+      信箱：
+      <a id="mail" target="_blank" rel="noopener noreferrer">載入中...</a>
+    </p>
+
+    <script is:inline>
+      const user = 'nelson930627';
+      const host = 'gmail.com';
+      const full = `${user}@${host}`;
+      const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${full}&su=關於你的小工具&body=嗨！我有看到你網站分享的 bat 檔...`;
+      const a = document.getElementById('mail');
+      a.href = url;
+      a.textContent = full;
+    </script>
   </main>
 </Layout>

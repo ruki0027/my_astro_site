@@ -55,17 +55,19 @@ const desc = "勤益科大學生｜個人作品與聯絡方式";
     <!-- 聯絡與連結 -->
     <section class="card">
       <h2>聯絡</h2>
-      <p>信箱：<a id="mail"></a></p>
+      <p>
+        信箱：
+        <a id="mail" target="_blank" rel="noopener noreferrer"></a>
+      </p>
 
       <script is:inline>
         const user = 'nelson930627';
-        const sep  = String.fromCharCode(64); // @
-        const host = 'gmail' + '.' + 'com';
-
-        const e = `${user}${sep}${host}`;
+        const host = 'gmail.com';
+        const full = `${user}@${host}`;
+        const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${full}`;
         const a = document.getElementById('mail');
-        a.href = 'mailto:' + e;
-        a.textContent = e;
+        a.href = url;
+        a.textContent = full;
       </script>
 
       <p class="muted">之後會補上社群 / YouTube / 專案連結。</p>
