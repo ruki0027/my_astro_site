@@ -30,20 +30,22 @@ import Layout from '../layouts/Layout.astro'
 txt 檔案可放入你預計會使用的套件，會自動檢查並安裝
 有任何問題歡迎聯絡我
 
-    <h2>聯絡</h2>
-    <p>
-      信箱：
-      <a id="mail" target="_blank" rel="noopener noreferrer">載入中...</a>
-    </p>
+    <section class="card">
+      <h2>聯絡</h2>
+      <p>
+        信箱：
+        <a id="mail" target="_blank" rel="noopener noreferrer"></a>
+      </p>
 
-    <script is:inline>
-      const user = 'nelson930627';
-      const host = 'gmail.com';
-      const full = `${user}@${host}`;
-      const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${full}&su=關於你的小工具&body=嗨！我有看到你網站分享的 bat 檔...`;
-      const a = document.getElementById('mail');
-      a.href = url;
-      a.textContent = full;
-    </script>
+      <script is:inline>
+        const user = 'nelson930627';
+        const host = 'gmail.com';
+        const full = `${user}@${host}`;
+        const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${full}`;
+        const a = document.getElementById('mail');
+        a.href = url;
+        a.textContent = full;
+      </script>
+    </section>
   </main>
 </Layout>
