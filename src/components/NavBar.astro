@@ -12,23 +12,20 @@ const brand = "MySite";
   <nav class="navbar-fixed__inner">
     <a class="brand" href="/">{brand}</a>
     <ul class="menu">
-      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      {links.map((l) => (
+        <li>
+          <a 
+            href={l.href} 
+            target={l.external ? "_blank" : undefined}
+            rel={l.external ? "noopener noreferrer" : undefined}
+          >
+            {l.label}
+          </a>
+        </li>
+      ))}
     </ul>
   </nav>
 </header>
-<ul class="menu">
-  {links.map((l) => (
-    <li>
-      <a 
-        href={l.href} 
-        target={l.external ? "_blank" : undefined}
-        rel={l.external ? "noopener noreferrer" : undefined}
-      >
-        {l.label}
-      </a>
-    </li>
-  ))}
-</ul>
 
 <style>
   /* 本體樣式（不汙染全域） */
